@@ -1,4 +1,9 @@
-// كود مؤقت لتشغيل الموقع بدون Supabase وتجاوز أخطاء الـ Build
-export const createClient = () => ({}) as any;
+import { createClientComponentClient, createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import { Database } from '@/types/database.types'
 
-export const createServerClient = () => ({}) as any;
+// Client-side Supabase client
+export const createClient = () => createClientComponentClient<Database>()
+
+// Server-side Supabase client
+export const createServerClient = () => createServerComponentClient<Database>({ cookies })
