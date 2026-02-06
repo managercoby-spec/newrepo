@@ -1,14 +1,14 @@
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { createClientComponentClient, createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/types/database.types'
 
-// دالة للكلاينت (تستخدم في الصفحات التي تبدأ بـ 'use client')
+// دالة المتصفح (Client) - آمنة للاستخدام في أي مكان
 export const createClient = () => createClientComponentClient<Database>()
 
-// دالة للسيرفر (تستخدم في Server Components فقط)
+// دالة السيرفر (Server) - لن تسبب خطأ لأن الاستيراد يحدث داخلها فقط
 export const createServerClient = () => {
-  // هذا الشرط يمنع الخطأ عند استدعاء الملف من جهة المتصفح
-  if (typeof window !== 'undefined') return createClient()
-  return createServerComponentClient<Database>({ cookies })
+  if (typeof window === 'undefined') {
+    const { cookies } = require('next/headers')
+    return createServerComponentClient<Database>({ cookies })
+  }
+  return createClient()
 }
